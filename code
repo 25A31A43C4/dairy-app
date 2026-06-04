@@ -1,0 +1,83 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <limits>
+#include <ctime>
+
+using namespace std;
+
+string getCurrentDateTime() {
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    string dateTime(dt);
+    dateTime.pop_back();
+    return dateTime;
+}
+
+void writeEntry() {
+    ofstream file("diary.txt", ios::app);
+
+    if (!file) {
+        cout << "Error opening file.\n";
+        return;
+    }
+
+    cout << "Write your diary entry:\n";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    string entry;
+    getline(cin, entry);
+
+    file << "--------------------------------\n";
+    file << "Date: " << getCurrentDateTime() << "\n\n";
+    file << entry << "\n";
+    file << "--------------------------------\n\n";
+
+    cout << "Entry saved.\n";
+}
+
+void viewEntries() {
+    ifstream file("diary.txt");
+
+    if (!file) {
+        cout << "No diary entries found.\n";
+        return;
+    }
+
+    string line;
+
+    while (getline(file, line)) {
+        cout << line << '\n';
+    }
+}
+
+int main() {
+    int choice;
+
+    do {
+        cout << "\n==== MY DIARY ====\n";
+        cout << "1. Write Entry\n";
+        cout << "2. View Entries\n";
+        cout << "3. Exit\n";
+        cout << "Choose: ";
+
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                writeEntry();
+                break;
+            case 2:
+                viewEntries();
+                break;
+            case 3:
+                cout << "Goodbye.\n";
+                break;
+            default:
+                cout << "Invalid option.\n";
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}
